@@ -90,8 +90,9 @@ st.markdown(
         <p style="font-size: 12px;">Coaches: Automate your team updates. <a href="https://cheerconnect.app">Learn More</a></p>
         <br>
         <p style="font-size: 10px; color: lightgrey;">
-            © 2026 Cheer Dad Translator. All rights reserved.<br>
-            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a><br>
+            © 2026 Cheer Dad Translator. All rights reserved.<br> 
+            <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pdwdZ3qIl-yLxbw1ajxU7Hvmn7NUaVc/edit?usp=sharing" target="_blank">Privacy Policy</a> | 
+            <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pdwdZ3qIl-yLxbw1ajxU7Hvmn7NUaVc/edit?usp=sharing" target="_blank">Terms of Service</a><br>
             <i>Not affiliated with any cheerleading organization. For entertainment purposes only.</i>
         </p>
     </div>
