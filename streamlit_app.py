@@ -89,7 +89,7 @@ if not is_paid:
     st.divider()
     st.markdown("### 🏆 Stay in the Game")
     user_email_input = st.text_input("Enter your email to unlock access:")
-    if user_email_input:
+if user_email_input:
     # Use the Stripe payment link but append the client_reference_id
     pay_url = f"https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05?client_reference_id={user_email_input}"
     
