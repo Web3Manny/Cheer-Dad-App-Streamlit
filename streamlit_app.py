@@ -10,7 +10,15 @@ st.set_page_config(
     page_icon="📣",
     initial_sidebar_state="collapsed"
 )
-
+# --- CLEAN UI FIX ---
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 # 2. BRANDING & HEADER
 st.title("📣 Cheer Dad Translator 🏈")
 st.subheader("The Sideline Essential")
