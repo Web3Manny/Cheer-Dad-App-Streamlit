@@ -77,7 +77,12 @@ if audio_file:
                 st.text_input("Email Address", key="user_email")
     else:
         st.warning("⚠️ Play clock's at zero! You've used your 3 free translations.")
-        st.write("Upgrade now to stay in the game for the rest of the season!")
+        st.write("### Support a Fellow Coach")
+        st.write("""
+            This app is funded by a Dad/Cheer coach. If you're enjoying it, 
+            grab a **Season Pass** to help cover the AI costs and keep 
+            this tool alive for the community!
+        """)
 
 # 6. MONETIZATION (Only show if NOT paid)
 if not is_paid:
