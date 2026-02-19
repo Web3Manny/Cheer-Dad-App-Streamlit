@@ -88,22 +88,29 @@ if audio_file:
 if not is_paid:
     st.divider()
     st.markdown("### 🏆 Stay in the Game")
-    user_email_input = st.text_input("Enter your email to unlock access:")
-if user_email_input:
-    # Use the Stripe payment link but append the client_reference_id
-    pay_url = f"https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05?client_reference_id={user_email_input}"
     
-    st.link_button("Get All-Access Pass", pay_url)
-    st.write("Love the app? Support the developer and get unlimited translations.")
-    st.info("⭐ Most dads choose All-Access during competition season")
+    # Show the value and price clearly first
+    st.info("Unlock unlimited translations for the entire weekend!")
+    st.markdown("""
+    * **Monthly Pass**: $4.99
+    * **All-Access Championship Pass**: $14.99
+    """)
     
-    col1, col2 = st.columns(2)
-    with col1:
-        st.link_button("Monthly Pass ($4.99/mo)", "https://buy.stripe.com/3cIeV59iP6SAfeI9zs7AI03")
-        st.caption("30 Days of Unlimited Translations")
-    with col2:
-        st.link_button("All-Access Championship Pass ($14.99/yr)", "https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05")
-        st.caption("One Year: Covers every competition & practice")
+    user_email_input = st.text_input("Enter your email to choose your pass:")
+    
+    if user_email_input:
+        # Pass 1: Monthly
+        pay_url_monthly = f"https://buy.stripe.com/YOUR_MONTHLY_LINK?client_reference_id={user_email_input}"
+        # Pass 2: All-Access (Your current link)
+        pay_url_all = f"https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05?client_reference_id={user_email_input}"
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.link_button("Get Monthly Pass", pay_url_monthly)
+        with col2:
+            st.link_button("Get All-Access Pass", pay_url_all)
+            
+        st.caption("Secure payment via Stripe. Your access will be tied to the email above.")
 
 # 7. FOOTER & LEGAL
 st.divider()
