@@ -103,8 +103,8 @@ if not is_paid:
 # 7. FOOTER & LEGAL
 st.divider()
 
-# Founder credibility line (Native Streamlit caption for better mobile scaling)
-st.caption("Built by a cheer coach - and a dad - who wanted to make the sideline more fun.")
+# Founder credibility line
+st.caption("Built by a cheer coach — and a dad — who wanted to make the sideline more fun.")
 
 # Footer + legal
 footer_html = """
@@ -130,5 +130,6 @@ footer_html = """
 </div>
 """
 
+# Render the HTML properly
 st.markdown(footer_html, unsafe_allow_html=True)
 
