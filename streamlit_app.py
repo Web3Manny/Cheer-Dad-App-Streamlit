@@ -103,33 +103,27 @@ if not is_paid:
 # 7. FOOTER & LEGAL
 st.divider()
 
-# Founder credibility line
-st.caption("Built by a cheer coach — and a dad — who wanted to make the sideline more fun.")
-
-# Footer + legal
+# Footer + legal (Centered and original tech-style)
 footer_html = """
-<div style="text-align: center; margin-top: 10px;">
-    <p style="color: #888888; font-size: 14px; margin-bottom: 5px;">
-        Powered by 
-        <a href="https://cheerconnect.app" target="_blank" style="text-decoration: none; color: #FFFFFF; font-weight: bold;">
-            CheerConnect
-        </a>
+<div style="text-align: center; font-family: sans-serif;">
+    <p style="color: #888888; font-size: 14px; margin-bottom: 2px;">
+        Powered by <a href="https://cheerconnect.app" target="_blank" style="text-decoration: none; color: white; font-weight: bold;">CheerConnect</a>
     </p>
-
-    <p style="font-size: 14px; color: #BBBBBB; margin-bottom: 20px;">
+    <p style="font-size: 13px; color: #BBBBBB; margin-bottom: 15px;">
         Coaches & Gym Owners: This was built for fun — CheerConnect was built for your business. 
         <br>
-        <a href="https://cheerconnect.app" target="_blank" style="color: #55aaff; text-decoration: underline;">Learn More</a>
+        <a href="https://cheerconnect.app" target="_blank" style="color: #55aaff;">Learn More</a>
     </p>
-
-    <p style="font-size: 10px; color: #666666; line-height: 1.6;">
+    <p style="font-size: 10px; color: #666666; line-height: 1.4;">
         © 2026 Cheer Dad Translator. All rights reserved.<br>
         <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pdwdZ3qIl-yLxbw1ajxU7Hvmn7NUaVc/edit?usp=sharing" target="_blank" style="color: #666666;">Privacy Policy</a> | 
         <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pdwdZ3qIl-yLxbw1ajxU7Hvmn7NUaVc/edit?usp=sharing" target="_blank" style="color: #666666;">Terms of Service</a><br>
-        <i style="opacity: 0.6;">Not affiliated with any cheerleading organization. For entertainment purposes only.</i>
+        <span style="font-style: italic; opacity: 0.6;">Not affiliated with any cheerleading organization. For entertainment purposes only.</span>
     </p>
 </div>
 """
+
+st.markdown(footer_html, unsafe_allow_html=True)
 
 
 
