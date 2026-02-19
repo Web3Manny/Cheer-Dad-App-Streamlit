@@ -1,6 +1,25 @@
 import streamlit as st
 from openai import OpenAI
 
+from supabase import create_client
+
+# 1. INITIALIZE (Place your keys here)
+url = st.secrets["SUPABASE_URL"]
+key = st.secrets["SUPABASE_KEY"]
+supabase = create_client(url, key)
+
+# 2. THE CHECKER (Add it right here!)
+def check_subscription(email):
+    if not email:
+        return False
+    try:
+        response = supabase.table("subscriptions").select("status").eq("email", email).execute()
+        if response.data and response.data[0].get("status") == "active":
+            return True
+    except Exception:
+        return False
+    return False
+
 # 1. AUTH & SETUP
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
