@@ -28,15 +28,32 @@ sport = st.selectbox(
 # Recording Widget
 audio_file = st.audio_input("Record her recap")
 
-# 5. TRANSLATION LOGIC (Indentation Fixed)
+# 5. TRANSLATION LOGIC
 if audio_file:
     if st.session_state.usage_count < 3:
         with st.spinner("Breaking down the film..."):
-            # A. Transcribe
+            
+            # --- THE FIX STARTS HERE ---
+            # Manually assign a name so Whisper knows the file type
+            audio_file.name = "record.wav" 
+            # --- THE FIX ENDS HERE ---
+
+            # A. Transcribe voice to text
             transcript = client.audio.transcriptions.create(
                 model="whisper-1", 
                 file=audio_file
             )
+            
+            # B. AI Translation
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": f"You are a hardcore, slightly rowdy {sport} fan. Translate cheerleading news into {sport} lingo. Use high-stakes sports terminology. Talk like a buddy at a sports bar."},
+                    {"role": "user", "content": transcript.text}
+                ]
+            )
+            
+            st.session_state.usage_count += 1
             
             # B. AI Translation
             response = client.chat.completions.create(
