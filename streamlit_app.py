@@ -22,7 +22,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # 2. BRANDING & HEADER
 st.title("📣 Cheer Dad Translator 🏈")
-st.subheader("The Sideline Essential")
+st.subheader("Understand your cheerleader - in sports terms you already know.")
 
 # 3. USAGE & ACCESS LOGIC
 query_params = st.query_params
@@ -90,7 +90,7 @@ if not is_paid:
     st.markdown("### 🏆 Stay in the Game")
     st.write("Love the app? Support the developer and get unlimited translations.")
     
-    st.info("⭐ **RECOMMENDED: All-Access Championship Pass** - Best value for the season!")
+    st.info("⭐ Most dads choose this during competition season")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -105,8 +105,11 @@ st.divider()
 st.markdown(
     """
     <div style="text-align: center;">
+    with st.container():
+    st.caption("Built by a cheer coach — and a dad — who wanted to make the sideline more fun.")
+    st.divider()
         <p style="color: grey; font-size: 14px;">Powered by <a href="https://cheerconnect.app" target="_blank" style="text-decoration: none; color: inherit;"><b>CheerConnect</b></a></p>
-        <p style="font-size: 14px;">Coaches & Gym Owners: Automate your team updates. <a href="https://cheerconnect.app" target="_blank">Learn More</a></p>
+        <p style="font-size: 14px;">Coaches & Gym Owners: This was built for fun - CheerConnect was built for your business.. <a href="https://cheerconnect.app" target="_blank">Learn More</a></p>
         <br>
         <p style="font-size: 10px; color: lightgrey;">
             © 2026 Cheer Dad Translator. All rights reserved.<br> 
@@ -117,4 +120,3 @@ st.markdown(
     </div>
     """, 
     unsafe_allow_html=True
-)
