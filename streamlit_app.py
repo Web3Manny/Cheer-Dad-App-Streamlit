@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # 2. BRANDING & HEADER
-st.title("📣 Cheer Dad Translator")
+st.title("📣 Cheer Dad Translator 🏈")
 st.subheader("The Sideline Essential")
 
 # 3. USAGE TRACKER
