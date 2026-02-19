@@ -103,13 +103,12 @@ if not is_paid:
 # 7. FOOTER & LEGAL
 st.divider()
 
-# Founder credibility line
-st.caption("Built by a cheer coach — and a dad — who wanted to make the sideline more fun.")
+# Founder credibility line (Native Streamlit caption for better mobile scaling)
+st.caption("Built by a cheer coach - and a dad - who wanted to make the sideline more fun.")
 
 # Footer + legal
 footer_html = """
 <div style="text-align: center; margin-top: 10px;">
-
     <p style="color: grey; font-size: 14px;">
         Powered by 
         <a href="https://cheerconnect.app" target="_blank" style="text-decoration: none; color: inherit;">
@@ -117,22 +116,17 @@ footer_html = """
         </a>
     </p>
 
-    <p style="font-size: 14px;">
-        Coaches & Gym Owners: This was built for fun — CheerConnect was built for your business.
-        <a href="https://cheerconnect.app" target="_blank">Learn More</a>
+    <p style="font-size: 14px; color: #FFFFFF;">
+        Coaches & Gym Owners: This was built for fun — CheerConnect was built for your business. 
+        <a href="https://cheerconnect.app" target="_blank" style="color: #ff0000; text-decoration: none; font-weight: bold;">Learn More</a>
     </p>
 
-    <p style="font-size: 10px; color: lightgrey;">
+    <p style="font-size: 10px; color: lightgrey; line-height: 1.6;">
         © 2026 Cheer Dad Translator. All rights reserved.<br>
-        <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pwdZ3ql1-ylxbw1ajxU7Hvm7NUaVc/edit?usp=sharing" target="_blank">
-            Privacy Policy
-        </a> |
-        <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pwdZ3ql1-ylxbw1ajxU7Hvm7NUaVc/edit?usp=sharing" target="_blank">
-            Terms of Service
-        </a><br>
+        <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pdwdZ3qIl-yLxbw1ajxU7Hvmn7NUaVc/edit?usp=sharing" target="_blank" style="color: lightgrey;">Privacy Policy</a> | 
+        <a href="https://docs.google.com/document/d/1z_ffg-GPW2M_pdwdZ3qIl-yLxbw1ajxU7Hvmn7NUaVc/edit?usp=sharing" target="_blank" style="color: lightgrey;">Terms of Service</a><br>
         <i>Not affiliated with any cheerleading organization. For entertainment purposes only.</i>
     </p>
-
 </div>
 """
 
