@@ -2,7 +2,6 @@ import streamlit as st
 from openai import OpenAI
 
 # 1. AUTH & SETUP
-# The key is pulled from Streamlit's secure secrets manager
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.set_page_config(
@@ -10,6 +9,7 @@ st.set_page_config(
     page_icon="📣",
     initial_sidebar_state="collapsed"
 )
+
 # --- CLEAN UI FIX ---
 hide_st_style = """
             <style>
@@ -19,35 +19,18 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
 # 2. BRANDING & HEADER
 st.title("📣 Cheer Dad Translator 🏈")
 st.subheader("The Sideline Essential")
+st.markdown("*Because you still think a 'Full-Up' is a gas station term.*")
 
 # 3. USAGE & ACCESS LOGIC
-# Check if the user just returned from a successful Stripe payment
 query_params = st.query_params
 is_paid = query_params.get("paid") == "true"
 
 if "usage_count" not in st.session_state:
     st.session_state.usage_count = 0
-
-# 5. TRANSLATION LOGIC (Updated for Paid Access)
-if audio_file:
-    # Logic: If they paid OR they are under the limit, let them translate
-    if is_paid or st.session_state.usage_count < 3:
-        with st.spinner("Breaking down the film..."):
-            audio_file.name = "record.wav"
-            
-            # ... (keep your existing Whisper and GPT code here) ...
-            
-            st.session_state.usage_count += 1
-            st.success(f"### {sport} Post-Game Analysis:")
-            st.write(response.choices[0].message.content)
-            
-            if is_paid:
-                st.caption("✅ MVP All-Access Active")
-    else:
-        st.warning("⚠️ Play clock's at zero! You've used your 3 free translations.")
 
 # 4. MAIN INTERFACE
 sport = st.selectbox(
@@ -55,20 +38,17 @@ sport = st.selectbox(
     ["NFL Football", "NBA Basketball", "MLB Baseball", "PGA Golf", "Soccer"]
 )
 
-# Recording Widget
 audio_file = st.audio_input("Record her recap")
 
 # 5. TRANSLATION LOGIC
 if audio_file:
-    if st.session_state.usage_count < 3:
+    # Allow translation if they have paid OR have free uses left
+    if is_paid or st.session_state.usage_count < 3:
         with st.spinner("Breaking down the film..."):
-            
-            # --- THE FIX STARTS HERE ---
-            # Manually assign a name so Whisper knows the file type
+            # Fix for Whisper file detection
             audio_file.name = "record.wav" 
-            # --- THE FIX ENDS HERE ---
 
-            # A. Transcribe voice to text
+            # A. Transcribe
             transcript = client.audio.transcriptions.create(
                 model="whisper-1", 
                 file=audio_file
@@ -85,27 +65,18 @@ if audio_file:
             
             st.session_state.usage_count += 1
             
-            # B. AI Translation
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": f"You are a hardcore, slightly rowdy {sport} fan. Translate cheerleading news into {sport} lingo. Use high-stakes sports terminology. Talk like a buddy at a sports bar."},
-                    {"role": "user", "content": transcript.text}
-                ]
-            )
-            
-            st.session_state.usage_count += 1
-            
             # C. Display Result
             st.success(f"### {sport} Post-Game Analysis:")
             st.write(response.choices[0].message.content)
             
-            # Email capture for the first free use
-            if st.session_state.usage_count == 1:
+            if is_paid:
+                st.caption("✅ MVP All-Access Active")
+            
+            # Email capture for the first free use (only for non-paid users)
+            if not is_paid and st.session_state.usage_count == 1:
                 st.info("Want the highlights? Enter your email for season updates:")
                 st.text_input("Email Address", key="user_email")
     else:
-        # This else now aligns perfectly with the usage_count check
         st.warning("⚠️ Play clock's at zero! You've used your 3 free translations.")
         st.write("Upgrade now to stay in the game for the rest of the season!")
 
@@ -115,7 +86,6 @@ if not is_paid:
     st.markdown("### 🏆 Stay in the Game")
     st.write("Love the app? Support the developer and get unlimited translations.")
     
-    # Recommended Plan Highlight
     st.info("⭐ **RECOMMENDED: All-Access Championship Pass** - Best value for the season!")
     
     col1, col2 = st.columns(2)
@@ -125,20 +95,6 @@ if not is_paid:
     with col2:
         st.link_button("All-Access Championship Pass ($14.99/yr)", "https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05")
         st.caption("One Year: Covers every competition & practice")
-
-# Recommended Plan Highlight
-st.info("⭐ **RECOMMENDED: All-Access Championship Pass** - Best value for the season!")
-
-col1, col2 = st.columns(2)
-with col1:
-    # Use your Stripe Link for the Monthly Pass
-    st.link_button("Monthly Pass ($4.99/mo)", "https://buy.stripe.com/3cIeV59iP6SAfeI9zs7AI03")
-    st.caption("30 Days of Unlimited Translations")
-
-with col2:
-    # Use your Stripe Link for the Annual Pass
-    st.link_button("All-Access Championship Pass ($14.99/yr)", "https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05")
-    st.caption("One Year: Covers every competition & practice")
 
 # 7. FOOTER & LEGAL
 st.divider()
