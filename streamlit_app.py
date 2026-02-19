@@ -90,7 +90,7 @@ if not is_paid:
     st.markdown("### 🏆 Stay in the Game")
     st.write("Love the app? Support the developer and get unlimited translations.")
     
-    st.info("⭐ Most dads choose this during competition season")
+    st.info("⭐ Most dads choose All-Access during competition season")
     
     col1, col2 = st.columns(2)
     with col1:
