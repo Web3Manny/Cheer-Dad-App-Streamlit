@@ -23,7 +23,6 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # 2. BRANDING & HEADER
 st.title("📣 Cheer Dad Translator 🏈")
 st.subheader("The Sideline Essential")
-st.markdown("*Because you still think a 'Full-Up' is a gas station term.*")
 
 # 3. USAGE & ACCESS LOGIC
 query_params = st.query_params
