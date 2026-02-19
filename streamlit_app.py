@@ -86,8 +86,8 @@ st.divider()
 st.markdown(
     """
     <div style="text-align: center;">
-        <p style="color: grey; font-size: 14px;">Powered by <b>CheerConnect</b></p>
-        <p style="font-size: 12px;">Coaches: Automate your team updates. <a href="https://cheerconnect.app">Learn More</a></p>
+        <p style="color: grey; font-size: 14px;">Powered by <a href="https://cheerconnect.app" target="_blank" style="text-decoration: none; color: inherit;"><b>CheerConnect</b></a></p>
+        <p style="font-size: 12px;">Coaches: Automate your team updates. <a href="https://cheerconnect.app" target="_blank">Learn More</a></p>
         <br>
         <p style="font-size: 10px; color: lightgrey;">
             © 2026 Cheer Dad Translator. All rights reserved.<br> 
