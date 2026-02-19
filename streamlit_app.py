@@ -23,9 +23,31 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 st.title("📣 Cheer Dad Translator 🏈")
 st.subheader("The Sideline Essential")
 
-# 3. USAGE TRACKER
+# 3. USAGE & ACCESS LOGIC
+# Check if the user just returned from a successful Stripe payment
+query_params = st.query_params
+is_paid = query_params.get("paid") == "true"
+
 if "usage_count" not in st.session_state:
     st.session_state.usage_count = 0
+
+# 5. TRANSLATION LOGIC (Updated for Paid Access)
+if audio_file:
+    # Logic: If they paid OR they are under the limit, let them translate
+    if is_paid or st.session_state.usage_count < 3:
+        with st.spinner("Breaking down the film..."):
+            audio_file.name = "record.wav"
+            
+            # ... (keep your existing Whisper and GPT code here) ...
+            
+            st.session_state.usage_count += 1
+            st.success(f"### {sport} Post-Game Analysis:")
+            st.write(response.choices[0].message.content)
+            
+            if is_paid:
+                st.caption("✅ MVP All-Access Active")
+    else:
+        st.warning("⚠️ Play clock's at zero! You've used your 3 free translations.")
 
 # 4. MAIN INTERFACE
 sport = st.selectbox(
@@ -87,10 +109,22 @@ if audio_file:
         st.warning("⚠️ Play clock's at zero! You've used your 3 free translations.")
         st.write("Upgrade now to stay in the game for the rest of the season!")
 
-# 6. MONETIZATION (Updated Product Names)
-st.divider()
-st.markdown("### 🏆 Stay in the Game")
-st.write("Love the app? Support the developer and get unlimited translations.")
+# 6. MONETIZATION (Only show if NOT paid)
+if not is_paid:
+    st.divider()
+    st.markdown("### 🏆 Stay in the Game")
+    st.write("Love the app? Support the developer and get unlimited translations.")
+    
+    # Recommended Plan Highlight
+    st.info("⭐ **RECOMMENDED: All-Access Championship Pass** - Best value for the season!")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.link_button("Monthly Pass ($4.99/mo)", "https://buy.stripe.com/3cIeV59iP6SAfeI9zs7AI03")
+        st.caption("30 Days of Unlimited Translations")
+    with col2:
+        st.link_button("All-Access Championship Pass ($14.99/yr)", "https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05")
+        st.caption("One Year: Covers every competition & practice")
 
 # Recommended Plan Highlight
 st.info("⭐ **RECOMMENDED: All-Access Championship Pass** - Best value for the season!")
