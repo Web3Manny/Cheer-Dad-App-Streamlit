@@ -73,7 +73,7 @@ if audio_file:
             
             # Email capture for the first free use (only for non-paid users)
             if not is_paid and st.session_state.usage_count == 1:
-                st.info("Want the highlights? Enter your email for season updates:")
+                st.info("Want to stay up-to-date with CheerDad App? Enter your email for season updates:")
                 st.text_input("Email Address", key="user_email")
     else:
         st.warning("⚠️ Play clock's at zero! You've used your 3 free translations.")
