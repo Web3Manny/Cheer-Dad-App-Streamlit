@@ -56,7 +56,7 @@ sport = st.selectbox(
     ["NFL Football", "NBA Basketball", "MLB Baseball", "PGA Golf", "Soccer"]
 )
 
-audio_file = st.audio_input("Record her recap")
+audio_file = st.audio_input("Have your athlete explain what just happened")
 
 # 5. TRANSLATION LOGIC
 if audio_file:
