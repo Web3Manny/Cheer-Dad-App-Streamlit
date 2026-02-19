@@ -88,6 +88,11 @@ if audio_file:
 if not is_paid:
     st.divider()
     st.markdown("### 🏆 Stay in the Game")
+    user_email_input = st.text_input("Enter your email to unlock access:")
+    if user_email_input:
+    # Use the Stripe payment link but append the client_reference_id
+    pay_url = f"https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05?client_reference_id={user_email_input}"
+    
     st.link_button("Get All-Access Pass", pay_url)
     st.write("Love the app? Support the developer and get unlimited translations.")
     st.info("⭐ Most dads choose All-Access during competition season")
@@ -99,11 +104,6 @@ if not is_paid:
     with col2:
         st.link_button("All-Access Championship Pass ($14.99/yr)", "https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05")
         st.caption("One Year: Covers every competition & practice")
-
-user_email_input = st.text_input("Enter your email to unlock access:")
-    if user_email_input:
-    # Use the Stripe payment link but append the client_reference_id
-    pay_url = f"https://buy.stripe.com/bJecMXgLh7WEc2wdPI7AI05?client_reference_id={user_email_input}"
 
 # 7. FOOTER & LEGAL
 st.divider()
