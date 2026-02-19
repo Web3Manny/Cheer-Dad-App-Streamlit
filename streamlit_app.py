@@ -90,10 +90,10 @@ if not is_paid:
     st.markdown("### 🏆 Stay in the Game")
     
     # Show the value and price clearly first
-    st.info("Unlock unlimited translations for the entire weekend!")
+    st.info("Unlock unlimited translations!")
     st.markdown("""
     * **Monthly Pass**: $4.99
-    * **All-Access Championship Pass**: $14.99
+    * **All-Access Championship Pass**: $14.99 - ⭐ Most dads choose All-Access during competition season
     """)
     
     user_email_input = st.text_input("Enter your email to choose your pass:")
