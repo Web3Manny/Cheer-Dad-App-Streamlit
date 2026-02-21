@@ -28,8 +28,28 @@ stripe.api_key = STRIPE_SECRET_KEY
 openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# In-memory schedule store (session_id -> extracted text)
-schedule_store = {}
+# === SCHEDULE STORAGE (Supabase-backed, scales to any traffic) ===
+def save_schedule(session_id: str, extracted_text: str, old_session_id: str = None):
+    """Save schedule to Supabase. Delete old session if provided."""
+    # Clean up old session first
+    if old_session_id:
+        supabase.table('schedule_sessions').delete().eq('session_id', old_session_id).execute()
+    # Delete sessions older than 24 hours to keep the table clean
+    from datetime import datetime, timedelta, timezone
+    cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+    supabase.table('schedule_sessions').delete().lt('created_at', cutoff).execute()
+    # Save new session
+    supabase.table('schedule_sessions').insert({
+        'session_id': session_id,
+        'extracted_text': extracted_text
+    }).execute()
+
+def get_schedule(session_id: str) -> str:
+    """Retrieve schedule text from Supabase."""
+    result = supabase.table('schedule_sessions').select('extracted_text').eq('session_id', session_id).execute()
+    if result.data:
+        return result.data[0]['extracted_text']
+    return None
 
 # === MODELS ===
 class TranslationRequest(BaseModel):
@@ -122,7 +142,7 @@ HTML_CONTENT = """
 
         <!-- SCHEDULE FINDER PROMO -->
         <div class="border border-dashed border-blue-200 rounded-2xl p-4 bg-blue-50 text-center space-y-2">
-            <p class="text-sm text-blue-800 font-semibold">📋 Tired of scrolling through performance times? Upload the comp PDF and ask anything. We've got you.</p>
+            <p class="text-sm text-blue-800 font-semibold">📋 Lost at the venue? Upload the comp PDF and ask anything. We've got you.</p>
             <button onclick="openScheduleModal()" class="text-xs text-blue-500 font-bold underline hover:text-blue-700">
                 Upload Competition Schedule →
             </button>
@@ -397,6 +417,10 @@ HTML_CONTENT = """
             statusEl.classList.remove('hidden');
             const formData = new FormData();
             formData.append('file', file);
+            // Pass old session ID so server can clean it up
+            if (currentSessionId) {
+                formData.append('old_session_id', currentSessionId);
+            }
             try {
                 const res = await fetch('/upload-schedule', { method: 'POST', body: formData });
                 const data = await res.json();
@@ -552,8 +576,8 @@ async def upload_audio(file: UploadFile = File(...)):
     return {"transcription": transcript.text}
 
 @app.post("/upload-schedule")
-async def upload_schedule(file: UploadFile = File(...)):
-    """Accept a PDF, extract text with OCR fallback, store in memory."""
+async def upload_schedule(file: UploadFile = File(...), old_session_id: Optional[str] = None):
+    """Accept a PDF, extract text with OCR fallback, store in Supabase."""
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
     try:
@@ -562,7 +586,7 @@ async def upload_schedule(file: UploadFile = File(...)):
         if not extracted_text or len(extracted_text) < 50:
             raise HTTPException(status_code=400, detail="Could not read enough text from this PDF. Try a different file.")
         session_id = f"schedule_{int(time.time())}"
-        schedule_store[session_id] = extracted_text
+        save_schedule(session_id, extracted_text, old_session_id)
         return {"session_id": session_id, "message": "Schedule loaded successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -570,7 +594,7 @@ async def upload_schedule(file: UploadFile = File(...)):
 @app.post("/query-schedule")
 async def query_schedule(req: ScheduleQueryRequest):
     """Answer a voice question against the stored schedule text."""
-    schedule_text = schedule_store.get(req.session_id)
+    schedule_text = get_schedule(req.session_id)
     if not schedule_text:
         raise HTTPException(status_code=404, detail="Schedule not found. Please re-upload your PDF.")
 
@@ -582,7 +606,7 @@ If the information isn't in the schedule, say so honestly.
 Keep your answer short and to the point. Dad just needs the facts fast.
 """
     response = openai_client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"SCHEDULE:\n{schedule_text}\n\nQUESTION: {req.question}"}
@@ -612,7 +636,7 @@ RULES:
 6. No section headers like "OFF THE COURT" or "FINAL WORD". Just flow naturally.
 """
     response = openai_client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"RECAP TO TRANSLATE: {req.transcription}"}
