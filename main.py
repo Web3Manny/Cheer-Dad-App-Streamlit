@@ -122,7 +122,7 @@ HTML_CONTENT = """
 
         <!-- SCHEDULE FINDER PROMO -->
         <div class="border border-dashed border-blue-200 rounded-2xl p-4 bg-blue-50 text-center space-y-2">
-            <p class="text-sm text-blue-800 font-semibold">📋 Lost at the venue? Upload the comp PDF and ask anything. We've got you.</p>
+            <p class="text-sm text-blue-800 font-semibold">📋 Tired of scrolling through performance times? Upload the comp PDF and ask anything. We've got you.</p>
             <button onclick="openScheduleModal()" class="text-xs text-blue-500 font-bold underline hover:text-blue-700">
                 Upload Competition Schedule →
             </button>
