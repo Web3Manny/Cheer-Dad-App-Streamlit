@@ -661,11 +661,6 @@ RULES:
 3. Keep cheer terminology IN but immediately follow it with the {req.sport} equivalent so dad gets both.
 4. High energy. Short sentences. Proud coach meets hype commentator.
 5. End with one line that matches the emotional tone of the recap. 
-   If it was a win — make dad feel like he needs to be there.
-   If it was a hard practice — make dad proud of the grind.
-   If it was a setback or tough day — make dad want to show up and support her.
-   If it was a milestone skill — make dad feel the weight of what she just accomplished.
-   Always end on something that deepens the connection between dad and his athlete.
 6. No section headers like "OFF THE COURT" or "FINAL WORD". Just flow naturally.
 """
     response = openai_client.chat.completions.create(
