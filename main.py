@@ -34,9 +34,9 @@ def save_schedule(session_id: str, extracted_text: str, old_session_id: str = No
     # Clean up old session first
     if old_session_id:
         supabase.table('schedule_sessions').delete().eq('session_id', old_session_id).execute()
-    # Delete sessions older than 24 hours to keep the table clean
+    # Delete sessions older than 72 hours (covers full 3-day competition weekend)
     from datetime import datetime, timedelta, timezone
-    cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+    cutoff = (datetime.now(timezone.utc) - timedelta(hours=72)).isoformat()
     supabase.table('schedule_sessions').delete().lt('created_at', cutoff).execute()
     # Save new session
     supabase.table('schedule_sessions').insert({
@@ -142,10 +142,23 @@ HTML_CONTENT = """
 
         <!-- SCHEDULE FINDER PROMO -->
         <div class="border border-dashed border-blue-200 rounded-2xl p-4 bg-blue-50 text-center space-y-2">
-            <p class="text-sm text-blue-800 font-semibold">📋 Lost at the venue? Upload the comp PDF and ask anything. We've got you.</p>
-            <button onclick="openScheduleModal()" class="text-xs text-blue-500 font-bold underline hover:text-blue-700">
-                Upload Competition Schedule →
-            </button>
+            <div id="schedulePromo">
+                <p class="text-sm text-blue-800 font-semibold">📋 Lost at the venue? Upload the comp PDF and ask anything. We've got you.</p>
+                <button onclick="openScheduleModal()" class="text-xs text-blue-500 font-bold underline hover:text-blue-700 mt-1">
+                    Upload Competition Schedule →
+                </button>
+            </div>
+            <div id="scheduleLoaded" class="hidden">
+                <p class="text-sm text-green-700 font-semibold">✅ Competition schedule loaded!</p>
+                <div class="flex gap-2 mt-2 justify-center">
+                    <button onclick="openScheduleModal()" class="bg-green-500 text-white font-bold px-4 py-2 rounded-xl text-xs hover:bg-green-600">
+                        🎤 Ask a Question
+                    </button>
+                    <button onclick="resetSchedule()" class="bg-gray-100 text-gray-500 font-bold px-4 py-2 rounded-xl text-xs hover:bg-gray-200">
+                        New PDF
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- PROGRESS BAR + PRICING -->
@@ -398,10 +411,22 @@ HTML_CONTENT = """
         }
 
         // === SCHEDULE FEATURE ===
+        function updateSchedulePromo() {
+            if (currentSessionId) {
+                document.getElementById('schedulePromo').classList.add('hidden');
+                document.getElementById('scheduleLoaded').classList.remove('hidden');
+            } else {
+                document.getElementById('schedulePromo').classList.remove('hidden');
+                document.getElementById('scheduleLoaded').classList.add('hidden');
+            }
+        }
+
         function openScheduleModal() {
+            // If schedule already loaded, go straight to mic — never show upload screen again
             if (currentSessionId) {
                 document.getElementById('scheduleStep1').classList.add('hidden');
                 document.getElementById('scheduleStep2').classList.remove('hidden');
+                document.getElementById('scheduleAnswer').classList.add('hidden');
             } else {
                 document.getElementById('scheduleStep1').classList.remove('hidden');
                 document.getElementById('scheduleStep2').classList.add('hidden');
@@ -417,7 +442,6 @@ HTML_CONTENT = """
             statusEl.classList.remove('hidden');
             const formData = new FormData();
             formData.append('file', file);
-            // Pass old session ID so server can clean it up
             if (currentSessionId) {
                 formData.append('old_session_id', currentSessionId);
             }
@@ -427,6 +451,7 @@ HTML_CONTENT = """
                 if (data.error) { statusEl.innerText = "Error: " + data.error; return; }
                 currentSessionId = data.session_id;
                 localStorage.setItem('schedule_session_id', currentSessionId);
+                updateSchedulePromo();
                 document.getElementById('scheduleStep1').classList.add('hidden');
                 document.getElementById('scheduleStep2').classList.remove('hidden');
             } catch (e) {
@@ -484,11 +509,13 @@ HTML_CONTENT = """
         function resetSchedule() {
             currentSessionId = null;
             localStorage.removeItem('schedule_session_id');
+            updateSchedulePromo();
             document.getElementById('scheduleStep2').classList.add('hidden');
             document.getElementById('scheduleStep1').classList.remove('hidden');
             document.getElementById('pdfUpload').value = '';
             document.getElementById('uploadStatus').classList.add('hidden');
             document.getElementById('scheduleAnswer').classList.add('hidden');
+            closeModal('scheduleModal');
         }
 
         // === MODALS ===
@@ -542,6 +569,7 @@ HTML_CONTENT = """
         }
 
         initializeUsage();
+        updateSchedulePromo(); // Restore schedule button state on page load
 
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('success') === 'true') {
