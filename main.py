@@ -54,6 +54,8 @@ HTML_CONTENT = """
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         .recording-active { animation: pulse-red 1.5s infinite; }
+        #checkoutModal { display: none; }
+        #checkoutModal.open { display: flex; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans min-h-screen flex flex-col items-center p-5">
@@ -122,6 +124,57 @@ HTML_CONTENT = """
         </div>
 
     </main>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 space-y-5">
+            <div class="text-center">
+                <p class="text-2xl">🏆</p>
+                <h2 class="text-xl font-black text-gray-900 mt-1">Unlock Unlimited Translations</h2>
+                <p id="modalPlanLabel" class="text-sm text-gray-500 mt-1"></p>
+            </div>
+
+            <div class="space-y-3">
+                <label class="block text-sm font-semibold text-gray-700">Email Address</label>
+                <input 
+                    type="email" 
+                    id="modalEmail" 
+                    placeholder="dad@example.com"
+                    class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
+            <!-- Consent checkbox -->
+            <div class="flex items-start gap-3">
+                <input type="checkbox" id="consentCheck" class="mt-1 w-4 h-4 accent-blue-500 flex-shrink-0" />
+                <label for="consentCheck" class="text-xs text-gray-500 leading-snug">
+                    I agree to the 
+                    <a href="/terms" target="_blank" class="text-blue-500 underline">Terms of Service</a> 
+                    and 
+                    <a href="/privacy" target="_blank" class="text-blue-500 underline">Privacy Policy</a>. 
+                    I understand my email will be used to manage my subscription and that I can cancel anytime.
+                </label>
+            </div>
+
+            <p id="modalError" class="text-xs text-red-500 hidden"></p>
+
+            <button 
+                onclick="submitCheckout()" 
+                class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg">
+                Continue to Payment →
+            </button>
+
+            <button 
+                onclick="closeModal()" 
+                class="w-full text-gray-400 text-sm hover:text-gray-600 py-1">
+                Cancel
+            </button>
+
+            <p class="text-xs text-gray-300 text-center">
+                Secured by Stripe. We never store your card details.
+            </p>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="mt-10 w-full max-w-md px-4 pb-10 space-y-4 text-center">
@@ -262,22 +315,66 @@ HTML_CONTENT = """
             recordBtn.parentElement.classList.remove('hidden');
         }
 
-        async function createCheckout(planType) {
-            const email = prompt("Enter your email to secure your pass:");
-            if (!email) return;
-            if (!email.includes('@')) { alert("Please enter a valid email address"); return; }
-            
+        let pendingPlanType = null;
+
+        function createCheckout(planType) {
+            pendingPlanType = planType;
+            const labels = {
+                monthly: '$4.99/month — 30 Days Unlimited',
+                annual: '$14.99/year — Full Season Pass'
+            };
+            document.getElementById('modalPlanLabel').innerText = labels[planType] || '';
+            document.getElementById('modalEmail').value = '';
+            document.getElementById('consentCheck').checked = false;
+            document.getElementById('modalError').classList.add('hidden');
+            document.getElementById('checkoutModal').classList.add('open');
+            setTimeout(() => document.getElementById('modalEmail').focus(), 100);
+        }
+
+        function closeModal() {
+            document.getElementById('checkoutModal').classList.remove('open');
+            pendingPlanType = null;
+        }
+
+        // Close modal if clicking backdrop
+        document.getElementById('checkoutModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        async function submitCheckout() {
+            const email = document.getElementById('modalEmail').value.trim();
+            const consent = document.getElementById('consentCheck').checked;
+            const errorEl = document.getElementById('modalError');
+
+            if (!email || !email.includes('@')) {
+                errorEl.innerText = 'Please enter a valid email address.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (!consent) {
+                errorEl.innerText = 'Please agree to the Terms of Service and Privacy Policy to continue.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            errorEl.classList.add('hidden');
+
             try {
                 const res = await fetch('/create-checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, plan_type: planType })
+                    body: JSON.stringify({ email, plan_type: pendingPlanType })
                 });
                 const data = await res.json();
-                if (data.error) { alert("Checkout failed: " + data.error); return; }
+                if (data.error) {
+                    errorEl.innerText = 'Checkout failed: ' + data.error;
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
                 if (data.url) { window.location.href = data.url; }
             } catch (e) {
-                alert("Something went wrong. Please try again.");
+                errorEl.innerText = 'Something went wrong. Please try again.';
+                errorEl.classList.remove('hidden');
             }
         }
 
