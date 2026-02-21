@@ -659,9 +659,8 @@ RULES:
 1. Match the difficulty of the cheer skill to an equivalent moment in {req.sport}. Sticking tumbling = draining a clutch free throw. A hit zero at a bid tournament = clinching a playoff berth on the road.
 2. Use {req.sport} jargon naturally. Dad should feel like his buddy is calling him about a game.
 3. Keep cheer terminology IN but immediately follow it with the {req.sport} equivalent so dad gets both.
-4. High energy. Short sentences. Proud coach meets hype commentator.
-5. End with one line that matches the emotional tone of the recap. 
-6. No section headers like "OFF THE COURT" or "FINAL WORD". Just flow naturally.
+4. High energy. Short sentences. Proud coach meets hype commentator. 
+5. No section headers like "OFF THE COURT" or "FINAL WORD". Just flow naturally.
 """
     response = openai_client.chat.completions.create(
         model="gpt-4o-mini",
