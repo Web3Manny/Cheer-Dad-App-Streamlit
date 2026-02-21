@@ -179,6 +179,12 @@ HTML_CONTENT = """
     <!-- FOOTER -->
     <footer class="mt-10 w-full max-w-md px-4 pb-10 space-y-4 text-center">
         
+        <!-- Personal touch -->
+        <p class="text-xs text-gray-400 leading-relaxed">
+            Love the app? Help support the dev! 🙌<br>
+            Built by a cheer coach — and a dad — to help other dads stay connected.
+        </p>
+
         <!-- Subtle CheerConnect promo -->
         <p class="text-xs text-gray-400">
             Coach or gym owner? 
