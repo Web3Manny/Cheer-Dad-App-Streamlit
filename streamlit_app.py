@@ -1,11 +1,13 @@
 import streamlit as st
 from openai import OpenAI
-
 from supabase import create_client
+import os
 
-# 1. INITIALIZE (Place your keys here)
-url = st.secrets["SUPABASE_URL"]
-key = st.secrets["SUPABASE_KEY"]
+# 1. INITIALIZE (Correctly checking both Railway and local secrets)
+url = os.environ.get("SUPABASE_URL") or st.secrets.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_KEY") or st.secrets.get("SUPABASE_KEY")
+
+# Ensure the client is created using the variables defined above
 supabase = create_client(url, key)
 
 # 2. THE CHECKER (Add it right here!)
