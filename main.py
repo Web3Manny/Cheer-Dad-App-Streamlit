@@ -131,7 +131,7 @@ HTML_CONTENT = """
         <!-- MIC SECTION -->
         <div class="flex flex-col items-center space-y-3">
             <p class="text-sm text-gray-500 text-center leading-snug">
-                2. Hit record, then let your <strong>athlete</strong> recap her practice or competition.
+                "2. Hit record to translate a recap or ask a quick cheer question."
             </p>
             <button id="recordBtn" disabled class="w-32 h-32 bg-gray-300 rounded-full flex flex-col items-center justify-center text-white shadow-lg disabled:opacity-50 transition-all">
                 <span class="text-4xl">🎤</span>
